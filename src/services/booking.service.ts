@@ -5,6 +5,7 @@ import enrollmentRepository from '@/repositories/enrollment-repository';
 import ticketsRepository from '@/repositories/tickets-repository';
 import { cannotdobookingerror } from '@/errors/cannot-do-book-error';
 import { ApplicationError } from '@/protocols';
+import { Request, Response } from 'express';
 
 type semid = Omit<Booking, 'id' | 'createdAt' | 'updatedAt'>;
 type paraupdate = Omit<Booking, 'createdAt' | 'updatedAt'>;
@@ -71,8 +72,19 @@ export  async function updateonDB({ roomId, id, userId }: paraupdate) {
     const room = await getroomByIdoNDB(roomId);
   
     if (!room || room.capacity <= bookings.length){ 
-        if(!room){throw notFoundError()}
-        if (room.capacity <= bookings.length){throw cannotdobookingerror()};
+        if(!room){
+          let err = new Error();
+          err.name = "404"
+          err.message = "404";
+          throw err;
+         }
+        if (room.capacity <= bookings.length){
+          let err = new Error();
+          err.name = "403"
+          err.message = "403";
+          throw err;
+
+        };
         }
     else{
         //
@@ -80,21 +92,33 @@ export  async function updateonDB({ roomId, id, userId }: paraupdate) {
   }
 
   export async function validarticket(userId: number) {
+    let res: Response
     const enrollment = await enrollmentRepository.findWithAddressByUserId(userId);
     if (!enrollment){
-        throw cannotdobookingerror();
+      let err = new Error();
+      err.name = "403"
+      err.message = "403";
+      throw err;
     }
   
     const ticket = await ticketsRepository.findTicketByEnrollmentId(enrollment.id);
   
     if (!ticket ||  ticket.TicketType.isRemote ||ticket.status === 'RESERVED') {
-      throw cannotdobookingerror();
+      let err = new Error();
+          err.name = "403"
+          err.message = "403";
+          throw err;
     }
   }
 
  export async function getBookingbyUserId(userId: number) {
     const booking = await getByUserIdonDB(userId);
-    if (!booking){throw notFoundError();}
+    if (!booking){
+      let err = new Error();
+          err.name = "404"
+          err.message = "404";
+          throw err;
+    }
     else{
         return booking
     }
@@ -119,20 +143,24 @@ export  async function updateonDB({ roomId, id, userId }: paraupdate) {
   }
   
  export async function updatebyroomanduser(userId: number, roomId: number) {
+
     if (!roomId){
         let err :ApplicationError;
         err = {
             name: 'BadRequestError',
             message: '404',
           };
-        throw err;
+        
     }
-  
+    else
     await validarbookingconformequarto(roomId);
     const booking = await getByUserIdonDB(userId);
   
     if (!booking || booking.userId !== userId){
-        throw cannotdobookingerror();
+      let err = new Error();
+      err.name = "403"
+      err.message = "403";
+      throw err;
     }
     else{
     const update = updateonDB({

@@ -16,7 +16,15 @@ export async function getBooking(req: AuthenticatedRequest, res: Response, next:
         Room: booking.Room,
       });
     } catch (e) {
-      next(e);
+      if(e.message === "403"){
+        return res.sendStatus(403)
+      }
+      else if(e.message === "404"){
+        return res.sendStatus(404)
+      }
+      else{
+        return res.sendStatus(500)
+      }
     }
   }
 
@@ -35,7 +43,15 @@ export async function createBooking(req: AuthenticatedRequest, res: Response, ne
         bookingId: booking.id,
       });
     } catch (e) {
-      next(e);
+      if(e.message === "403"){
+        return res.sendStatus(403)
+      }
+      else if(e.message === "404"){
+        return res.sendStatus(404)
+      }
+      else{
+        return res.sendStatus(500)
+      }
     }
   }
 
@@ -45,7 +61,7 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response, ne
   
     try {
         if (!bookingId){
-            return res.sendStatus(httpStatus.BAD_REQUEST)
+            
         };
       const { roomId } = req.body as Record<string, number>;
       const booking = await updatebyroomanduser(userId, roomId);
@@ -54,6 +70,14 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response, ne
         bookingId: booking.id,
       });
     } catch (e) {
-      next(e);
+      if(e.message === "403"){
+        return res.sendStatus(403)
+      }
+      else if(e.message === "404"){
+        return res.sendStatus(404)
+      }
+      else{
+        return res.sendStatus(500)
+      }
     }
   }
