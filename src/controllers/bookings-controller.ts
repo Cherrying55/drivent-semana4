@@ -17,13 +17,13 @@ export async function getBooking(req: AuthenticatedRequest, res: Response, next:
       });
     } catch (e) {
       if(e.message === "403"){
-        return res.sendStatus(403)
+        return res.sendStatus(httpStatus.FORBIDDEN)
       }
       else if(e.message === "404"){
-        return res.sendStatus(404)
+        return res.sendStatus(httpStatus.NOT_FOUND)
       }
       else{
-        return res.sendStatus(500)
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
       }
     }
   }
@@ -44,13 +44,13 @@ export async function createBooking(req: AuthenticatedRequest, res: Response, ne
       });
     } catch (e) {
       if(e.message === "403"){
-        return res.sendStatus(403)
+        return res.sendStatus(httpStatus.FORBIDDEN)
       }
       else if(e.message === "404"){
-        return res.sendStatus(404)
+        return res.sendStatus(httpStatus.NOT_FOUND)
       }
       else{
-        return res.sendStatus(500)
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
       }
     }
   }
@@ -71,13 +71,13 @@ export async function updateBooking(req: AuthenticatedRequest, res: Response, ne
       });
     } catch (e) {
       if(e.message === "403"){
-        return res.sendStatus(403)
+        return res.sendStatus(httpStatus.FORBIDDEN)
       }
       else if(e.message === "404"){
-        return res.sendStatus(404)
+        return res.sendStatus(httpStatus.NOT_FOUND)
       }
       else{
-        return res.sendStatus(500)
+        return res.sendStatus(httpStatus.INTERNAL_SERVER_ERROR)
       }
     }
   }
